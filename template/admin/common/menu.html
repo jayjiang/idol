@@ -1,0 +1,18 @@
+<ul class="layui-nav layui-nav-tree" lay-filter="leftNav">
+    {volist name=":request()->menu" id="vo"}
+    <li class="layui-nav-item">
+        <a href="javascript:;"><i class="iconfont {$vo['icon']}"></i>{$vo['title']}</a>
+        {if $vo['child']}
+        <dl class="layui-nav-child">
+            {volist name="$vo['child']" id="v"}
+            <dd>
+                <a href="javascript:;" data-url="{$v['name']}" data-id='{$v['id']}' data-text="{$v['title']}">
+                    <span class="l-line"></span>{$v['title']}
+                </a>
+            </dd>
+            {/volist}
+        </dl>
+        {/if}
+    </li>
+    {/volist}
+</ul>

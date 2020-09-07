@@ -1,0 +1,58 @@
+{extend name="common/iframe" /}
+{block name="body"}
+<form class="layui-form" style="text-align: center;">
+    <input type="hidden" value="{$id}" name="id">
+    <div class="layui-form-item">
+        <div id="LAY-auth-tree-index"></div>
+    </div>
+    <div class="layui-form-item">
+        <button class="layui-btn" type="submit" lay-submit lay-filter="LAY-auth-tree-submit">提交更新</button>
+        <button class="layui-btn layui-btn-primary" type="reset">重置</button>
+    </div>
+</form>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    layui.config({
+        base: "__STATIC__/js/",
+    }).extend({
+        authtree: 'authtree',
+    });
+    layui.use(['element', 'jquery', 'form', 'authtree'], function () {
+        var element = layui.element,
+            authtree = layui.authtree,
+            form = layui.form,
+            $ = layui.jquery;
+        $.post("{:url('Group/rules',['id'=>$id])}", {}, res => {
+            var trees = authtree.listConvert(res.data.list, {
+                primaryKey: 'id',
+                parentKey: 'pid',
+                nameKey: 'title',
+                valueKey: 'id',
+                checkedKey: res.data.checkedId,
+            });
+            authtree.render('#LAY-auth-tree-index', trees, {
+                inputname: 'ids[]',
+                layfilter: 'lay-check-auth',
+                'theme': 'auth-skin-default',
+                'themePath': "__STATIC__/layui_exts/tree_themes/",
+                autowidth: true
+            });
+        })
+        //监听提交
+        form.on('submit(LAY-auth-tree-submit)', function (data) {
+            $.post("{:url('Group/modifyRules')}", data.field, res => {
+                layer.msg(res.msg)
+                if (res.code == 200) {
+                    setTimeout(() => {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    }, 1500)
+                }
+            })
+            return false;
+        });
+    });
+
+</script>
+{/block}

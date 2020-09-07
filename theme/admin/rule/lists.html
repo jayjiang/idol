@@ -1,0 +1,211 @@
+{extend name="common/base" /}
+{block name="body"}
+<div class="layui-card">
+    <div class="layui-card-body">
+        <p>
+            <button class="btn btn-primary created" type="button"><i class="fa fa-plus"></i>&nbsp;新增</button>
+            <button class="btn btn-success checkAll" type="button"><i class="fa fa-pencil-square-o"></i>&nbsp;全选</span>
+            </button>
+            <button class="btn btn-danger uncheckAll" type="button"><i
+                    class="fa fa-pencil-square-o"></i>&nbsp;全不选</span>
+            </button>
+            <button class="btn btn-warning reverseCheck" type="button"><i
+                    class="fa fa-pencil-square-o"></i>&nbsp;反选</span>
+            </button>
+            <button class="btn btn-info batchDeleted" type="button"><i class="fa fa-remove"></i>&nbsp;批量删除
+            </button>
+        </p>
+        <div class="ibox float-e-margins">
+            <div class="ibox-title" style="border: none;">
+                <h5>菜单规则 <small class="m-l-sm">
+                    <span class="layui-breadcrumb">
+                      <a href="">系统管理</a>
+                      <a href="">菜单规则</a>
+                    </span>
+                </small></h5>
+            </div>
+            <form class="layui-form" action="">
+                <table class="layui-table layui-form" id="tree-table" lay-size="sm"></table>
+            </form>
+            <!--分页-->
+            <div id="paging" style="text-align: right;"></div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    layui.config({
+        base: "__STATIC__/js/",
+    })
+    layui.use(['element', 'jquery', 'laypage', 'treeTable', 'form', 'code', 'layer'], function () {
+        var o = layui.$,
+            form = layui.form,
+            layer = layui.layer,
+            treeTable = layui.treeTable;
+        var re = treeTable.render({
+            elem: '#tree-table',
+            url: "{:url('Rule/lists')}",
+            icon_key: 'title',
+            is_checkbox: true,
+            end: function (e) {
+                form.render();
+            },
+            cols: [
+                {
+                    key: 'id',
+                    title: '编号',
+                    align: 'center',
+                }, {
+                    key: 'title',
+                    title: '菜单名称',
+                }, {
+                    key: 'name',
+                    title: '菜单规则',
+                }, {
+                    key: 'is_verify',
+                    title: '验证权限',
+                    align: 'center',
+                    template: function (item) {
+                        if (item.is_verify == 1) {
+                            return '<span style="color:#1ab394"><i class="fa fa-check"></i></span>';
+                        } else {
+                            return '<span style="color:#ed5565"><i class="fa fa-times"></i></span>';
+                        }
+                    }
+                }, {
+                    key: 'is_menu',
+                    title: '是否菜单',
+                    align: 'center',
+                    template: function (item) {
+                        if (item.is_menu == 1) {
+                            return '<span style="color:#1ab394"><i class="fa fa-check"></i></span>';
+                        } else {
+                            return '<span style="color:#ed5565"><i class="fa fa-times"></i></span>';
+                        }
+                    }
+                }, {
+                    key: 'create_time',
+                    align: 'center',
+                    title: '添加时间',
+                }, {
+                    key: 'update_time',
+                    align: 'center',
+                    title: '更新时间',
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    template: function (item) {
+                        return "<button  lay-filter=\"createdChildren\" class=\"btn btn-warning btn-sm\" type=\"button\"\n" +
+                            "                                        @click='createdChildren' :data-id=" + item.id + "><i class=\"fa fa-plus\"></i>&nbsp;添加\n" +
+                            "                                </button>\n" +
+                            "                                <button lay-filter=\"modifyRule\" class=\"btn btn-primary btn-sm\" type=\"button\" @click='modifyRule'" +
+                            "                                        :data-id=" + item.id + "><i\n" +
+                            "                                        class=\"fa fa-pencil-square-o\"></i>&nbsp;编辑\n" +
+                            "                                </button>\n" +
+                            "                                <button lay-filter=\"deleted\" class=\"btn btn-danger btn-sm\" type=\"button\" @click=\"deleted\"\n" +
+                            "                                        :data-id=" + item.id + "><i\n" +
+                            "                                        class=\"fa fa-remove\"></i>&nbsp;删除\n" +
+                            "                                </button>";
+                    }
+                }
+            ]
+        });
+        form.on('checkbox(is_verify)', function (data) {
+            layer.msg(JSON.stringify(data));
+            // console.log(data.elem); //得到checkbox原始DOM对象
+            // console.log(data.elem.checked); //是否被选中，true或者false
+            // console.log(data.value); //复选框value值，也可以通过data.elem.value得到
+            // console.log(data.othis); //得到美化后的DOM对象
+        });
+        // 监听验证开关
+        // treeTable.on('tree(is_verify)',function(data){
+        //     layer.msg(JSON.stringify(data));
+        // })
+        // // 监听菜单开关
+        // treeTable.on('tree(is_verify)',function(data){
+        //     layer.msg(JSON.stringify(data));
+        // })
+        // 全选
+        $('.checkAll').click(function () {
+            treeTable.checkAll(re);
+        })
+        // 全不选
+        $(".uncheckAll").click(function () {
+            treeTable.uncheckAll(re);
+        })
+        // 反选
+        $(".reverseCheck").click(function () {
+            treeTable.reverseCheck(re);
+        })
+        // 添加子菜单
+        treeTable.on('tree(createdChildren)', function (data) {
+            let id = data.item.id
+            layer.open({
+                type: 2,
+                title: '添加' + data.item.title + '的子菜单',
+                shade: 0.8,
+                area: ['480px', '500px'],
+                content: "{:url('Rule/created')}?pid=" + id,
+                end: function () {
+                    treeTable.render(re)
+                }
+            });
+        })
+        // 编辑规则
+        treeTable.on('tree(modifyRule)', function (data) {
+            let that = this
+            let id = data.item.id
+            layer.open({
+                type: 2,
+                title: '编辑' + data.item.title + '规则',
+                shade: 0.8,
+                area: ['480px', '500px'],
+                content: "{:url('Rule/modify')}?id=" + id,
+                end: function () {
+                    treeTable.render(re)
+                }
+            });
+        })
+        // 单个删除
+        treeTable.on('tree(deleted)', function (data) {
+            let id = data.item.id
+            $.post("{:url('Rule/deleted')}", {ids: id}, res => {
+                layer.msg(res.msg)
+                if (res.code == 200) {
+                    setTimeout(() => {
+                        treeTable.render(re)
+                    }, 1500)
+                }
+            })
+        })
+        // 批量删除
+        $(".batchDeleted").click(function () {
+            if (!treeTable.checked(re).join(',')) {
+                layer.msg("没有选中项");
+                return false;
+            }
+            $.post("{:url('Rule/deleted')}", {ids: treeTable.checked(re).join(',')}, res => {
+                layer.msg(res.msg)
+                treeTable.render(re)
+            })
+        })
+
+        // 添加
+        $(".created").click(function () {
+            layer.open({
+                type: 2,
+                title: '添加菜单规则',
+                shade: 0.8,
+                area: ['480px', '500px'],
+                content: "{:url('Rule/created')}",
+                end: function () {
+                    treeTable.render(re)
+                }
+            });
+        })
+    });
+
+</script>
+{/block}

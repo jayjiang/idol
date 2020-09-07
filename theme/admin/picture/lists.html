@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片管理器</title>
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css"/>
+    <style type="text/css">
+        .picture {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .picture .item {
+            width: 120px;
+            height: 120px;
+            margin: 10px;
+            background-color: #eee;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .picture .item img {
+            width: 100%;
+        }
+        .action {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, .5);
+            visibility: hidden;
+        }
+
+        .picture .item:hover .action {
+            visibility: visible;
+        }
+        .active{
+            visibility: visible;
+        }
+
+        .action div i {
+            font-size: 28px;
+            color: #fff;
+            cursor: pointer;
+            margin: 0px 5px;
+        }
+
+        .action div i:hover {
+            color: #FF5722;
+        }
+    </style>
+</head>
+<body>
+<div id='app'>
+    <div class="layui-card pic-box" style="margin-bottom: 60px;">
+        <div class="layui-card-header" style="margin-top: 10px;padding-bottom: 10px;position: fixed;top: 0px;left: 0px;z-index: 9999;">
+            <div class="layui-btn-group">
+                <button type="button" class="layui-btn layui-btn-danger" id="uploads">上传图片</button>
+                <button type="button" class="layui-btn layui-btn-warm" @click="preImg">预览选中（{{ checkedCount }}）</button>
+                <button type="button" class="layui-btn layui-btn-normal" @click="confirm">确认关闭</button>
+                <button type="button" class="layui-btn" @click="confirm">取消返回</button>
+            </div>
+        </div>
+        <div class="layui-card-body" style="min-height: 300px;margin-top: 60px;">
+            <div class="picture">
+                <div class="item" v-for="item in list">
+                    <img :src="item.path">
+                    <div :class="{ 'active action':item.checked,'action':!item.checked }">
+                        <div class="created"><i class="layui-icon" v-if="!item.checked" @click="add(item.pic_id)">&#xe61f;</i>
+                        </div>
+                        <div class="created"><i class="layui-icon" v-if="item.checked" @click="reduce(item.pic_id)">&#xe616;</i>
+                        </div>
+                        <div class="deleted"><i class="layui-icon" @click="del(item.pic_id)">&#xe640;</i></div>
+                        <div class="deleted"><i class="layui-icon" @click="pre(item.pic_id)">&#xe615;</i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-card" style="text-align: center;position: fixed;bottom: 0px;left: 0px;width: 100%;z-index: 99999;">
+        <div class="layui-card-body">
+            <div id="paging"></div>
+        </div>
+    </div>
+</div>
+<script src="https://www.layuicdn.com/layui/layui.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.6.11/vue.min.js"></script>
+<script type="text/javascript">
+    layui.use(['laypage', 'upload', 'jquery','layer'], function () {
+        var laypage = layui.laypage,
+            $ = layui.jquery,
+            layer = layui.layer,
+            upload = layui.upload;
+        $(function () {
+            upload.render({
+                elem: '#uploads' //绑定元素
+                , url: "{:url('Uploads/start')}" //上传接口
+                , done: function (res) {
+                    layer.msg(res.msg)
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1500)
+                }
+                , error: function (err) {
+                    //请求异常回调
+                }
+            });
+        })
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                total: 0,
+                page: 1,
+                limit: 10,
+                list: [],
+                checkedCount:0
+            },
+            created: function () {
+                this.getPicture()
+            },
+            methods: {
+                confirm:function(){
+                    let file = [];
+                    var index = 0
+                    for (let i in this.list) {
+                        if (this.list[i].checked) {
+                            file[index] = this.list[i];
+                            index++;
+                        }
+                    }
+                    layui.data('file', {
+                        key: 'object'
+                        ,value: file
+                    });
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                },
+                cancel:function(){
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                },
+                add: function (id) {
+                    let obj = []
+                    for (let i in this.list) {
+                        if (this.list[i].pic_id == id) {
+                            this.list[i].checked = true
+                            this.checkedCount+=1
+                        }
+                        obj[i] = this.list[i]
+                    }
+                    this.list = obj
+                },
+                del: function (id) {
+                    $.post("{:url('Picture/deleted')}",{id:id},res=>{
+                        layer.msg(res.msg)
+                        setTimeout(() => {
+                            this.getPicture()
+                        }, 1500)
+                    })
+                },
+                pre: function (id) {
+                    let obj = []
+                    for (let i in this.list) {
+                        if (this.list[i].pic_id == id) {
+                            obj[0] = {
+                                "alt": this.list[i].path,
+                                "pid": this.list[i].pic_id, //图片id
+                                "src": this.list[i].path, //原图地址
+                                "thumb": this.list[i].path //缩略图地址
+                            }
+                        }
+                    }
+                    let preImage = {
+                        "data": obj
+                    }
+                    layer.photos({
+                        photos: preImage
+                    });
+                },
+                preImg: function () {
+                    let image = []
+                    let index = 0
+                    for (let i in this.list){
+                        if (this.list[i].checked){
+                            let obj = {
+                                "alt": this.list[i].path,
+                                "pid": this.list[i].pic_id, //图片id
+                                "src": this.list[i].path, //原图地址
+                                "thumb": this.list[i].path //缩略图地址
+                            }
+                            image[index] = obj
+                            index++
+                        }
+                    }
+                    let preImage = {
+                        "data": image
+                    }
+                    layer.photos({
+                        photos: preImage
+                    });
+                },
+                reduce: function (id) {
+                    let obj = []
+                    for (let i in this.list) {
+                        if (this.list[i].pic_id == id) {
+                            this.list[i].checked = false
+                            this.checkedCount-=1
+                        }
+                        obj[i] = this.list[i]
+                    }
+                    this.list = obj
+                },
+                getPicture: function () {
+                    $.post("{:url('Picture/lists')}", {page: this.page}, res => {
+                        this.total = res.data.total
+                        this.list = res.data.data
+                        this.render()
+                    })
+                },
+                render: function () {
+                    let that = this
+                    laypage.render({
+                        elem: 'paging',
+                        curr: that.page,
+                        count: that.total
+                        , jump: function (obj, first) {
+                            that.page = obj.curr
+                            if (!first) {
+                                that.getPicture()
+                            }
+                        }
+                    });
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

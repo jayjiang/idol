@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>{$dev['site_name']}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta name="keywords" content="{$dev['site_keywords']}">
+    <meta name="description" content="{$dev['site_description']}">
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html"/>
+    <![endif]-->
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="__STATIC__/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="__STATIC__/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="__STATIC__/css/animate.css" rel="stylesheet">
+    <link href="__STATIC__/layui/css/layui.css" rel="stylesheet">
+    <link href="__STATIC__/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="__STATIC__/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="__STATIC__/css/app.css" rel="stylesheet">
+
+<!--    <link href="http://cdn.amazeui.org/amazeui/2.5.0/css/amazeui.css" rel="stylesheet">-->
+<!--    <link href="http://cdn.amazeui.org/amazeui/2.5.0/css/amazeui.min.css" rel="stylesheet">-->
+    {block name="style"}{/block}
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg">
+
+<div class="container-fluid" id="app" style="background-color: #fff;min-height: 100%;">
+    {block name="body"}
+
+    {/block}
+</div>
+<!-- 全局js -->
+<script src="__STATIC__/js/jquery.min.js?v=2.1.4"></script>
+<script src="__STATIC__/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="__STATIC__/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="__STATIC__/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="__STATIC__/js/plugins/layer/layer.min.js"></script>
+
+<!-- 自定义js -->
+<script src="__STATIC__/js/hplus.js?v=4.1.0"></script>
+<script type="text/javascript" src="__STATIC__/js/contabs.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+
+<!-- iCheck -->
+<script src="__STATIC__/js/plugins/iCheck/icheck.min.js"></script>
+
+<!-- Nestable List -->
+<script src="__STATIC__/js/plugins/nestable/jquery.nestable.js"></script>
+
+<!-- 第三方插件 -->
+<script src="__STATIC__/js/plugins/pace/pace.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+
+<!--<script src="http://cdn.amazeui.org/amazeui/2.5.0/js/amazeui.widgets.helper.min.js"></script>-->
+<!--<script src="http://cdn.amazeui.org/amazeui/2.5.0/js/amazeui.widgets.helper.js"></script>-->
+<!--<script src="http://cdn.amazeui.org/amazeui/2.5.0/js/amazeui.ie8polyfill.min.js"></script>-->
+<!--<script src="http://cdn.amazeui.org/amazeui/2.5.0/js/amazeui.ie8polyfill.js"></script>-->
+<!--<script src="http://cdn.amazeui.org/amazeui/2.5.0/js/amazeui.min.js"></script>-->
+<!--<script src="http://cdn.amazeui.org/amazeui/2.5.0/js/amazeui.js"></script>-->
+
+{block name="script"}{/block}
+</body>
+
+</html>

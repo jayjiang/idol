@@ -1,0 +1,87 @@
+{extend name="common/iframe" /}
+{block name="body"}
+<div class="layui-card">
+    <div class="layui-card-body">
+        <p>
+            <button class="btn btn-primary created" type="button"><i class="fa fa-plus"></i>&nbsp;新增</button>
+            <button class="btn btn-success" @click="checkAll" type="button"><i class="fa fa-pencil-square-o"></i>&nbsp;全选</span>
+            </button>
+            <button class="btn btn-danger" @click="checkBack" type="button"><i class="fa fa-pencil-square-o"></i>&nbsp;反选</span>
+            </button>
+            <button class="btn btn-info " type="button" @click="batchDeleted"><i class="fa fa-remove"></i>&nbsp;删除
+            </button>
+        </p>
+        <div class="ibox float-e-margins">
+            <div class="ibox-title" style="border: none;">
+                <form class="form-inline lists-search">
+                    <div class="form-group">
+                        <label>商品名称</label>
+                        <input type="text" placeholder="请输商品名称" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>商品名称</label>
+                        <input type="text" placeholder="请输商品名称" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>商品名称</label>
+                        <input type="text" placeholder="请输商品名称" class="form-control">
+                    </div>
+                    <button class="btn btn-white" type="submit">搜索</button>
+                </form>
+            </div>
+            <div class="ibox-content" style="padding: 0px;">
+                <table id="demo" lay-filter="test"></table>
+            </div>
+            <!--分页-->
+            <div id="paging" style="text-align: right;"></div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
+    </div>
+</script>
+{/block}
+{block name="script"}
+<script>
+    layui.use(['table','jquery'], function(){
+        var table = layui.table;
+        var $ = layui.jquery;
+        $(".created").click(function () {
+            var index = layer.open({
+                type: 2,
+                title: false,
+                shade: 0.8,
+                area: ['980px', '560px'],
+                content: "{:url('Goods/created')}",
+                end: function () {
+
+                }
+            });
+        })
+        table.render({
+            elem: '#demo'
+            ,url: '/demo/table/user/' //数据接口
+            ,page: true //开启分页
+            ,toolbar: true
+            ,cols: [[ //表头
+                {field: 'id', title: 'ID', sort: true, fixed: 'left'}
+                ,{field: 'goods_name', title: '商品名称'}
+                ,{field: 'category_name', title: '所属分类'}
+                ,{field: 'cover', title: '封面图'}
+                ,{field: 'sale_price', title: '销售价'}
+                ,{field: 'vip_price', title: '会员价'}
+                ,{field: 'market_price', title: '市场价'}
+                ,{field: 'is_up', title: '上下架'}
+                ,{field: 'stock', title: '库存'}
+                ,{field: 'supplier', title: '供应商'}
+                ,{field: 'create_time', title: '发布时间'}
+                ,{field: 'action', title: '操作',toolbar:"#toolbar"}
+            ]]
+        });
+    });
+</script>
+{/block}

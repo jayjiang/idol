@@ -1,0 +1,47 @@
+{extend name="common/iframe" /}
+{block name="body"}
+<form role="form"  class="form-horizontal layui-form" style="padding: 20px 15px;">
+    <input type="hidden" value="{$group['id']}" name="id">
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">组名称</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <input type="text" name="title" value="{$group['title']}" placeholder="请输入权限组名称" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">组状态</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <input type="radio" name="status" value="1" title="显示" {$group['status'] == 1?'checked':''}>
+            <input type="radio" name="status" value="0" title="隐藏" {$group['status'] == 0?'checked':''}>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;"></label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4" style="padding: 0px;">
+            <button class="btn btn-primary btn-block" type="submit" lay-submit lay-filter="submit">确认提交</button>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="script"}
+<script>
+    layui.use(['element', 'jquery','form'], function () {
+        var element = layui.element,
+            form = layui.form,
+            $ = layui.jquery;
+        form.on('submit(submit)', function(data){
+            $.post("{:url('Group/modify')}",data.field,res=>{
+                layer.msg(res.msg)
+                if (res.code == 200){
+                    setTimeout(()=>{
+                        var index=parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    },1500)
+                }
+            })
+            return false;
+        });
+    });
+
+</script>
+{/block}

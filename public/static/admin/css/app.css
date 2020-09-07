@@ -1,0 +1,17 @@
+.lists-search {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.lists-search > div {
+    margin: 0px 5px;
+}
+
+.lists-search > div > input {
+    margin-left: 5px;
+}
+
+.lists-search .btn {
+    margin: 0px;
+}

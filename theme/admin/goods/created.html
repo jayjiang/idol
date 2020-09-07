@@ -1,0 +1,283 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="__STATIC__/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="__STATIC__/layui/css/layui.css" rel="stylesheet">
+    <link rel="stylesheet" href="__STATIC__/css/goods.css">
+    <link rel="stylesheet" href="__STATIC__/css/amazeui.min.css"/>
+    <link href="__STATIC__/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+</head>
+<body>
+<form class="layui-form" lay-filter="goods_form" action="" id="app">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">基本信息</li>
+            <li>规格库存</li>
+            <li>商品详情</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">商品名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="goods[goods_name]" required lay-verify="required" placeholder="请输入标题"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">商品分类</label>
+                    <div class="layui-input-block">
+                        <select name="goods[category_id]" lay-verify="required">
+                            <option value=""></option>
+                            <option value="0">美食</option>
+                            <option value="1">水果</option>
+                            <option value="2">晚餐</option>
+                            <option value="3">早餐</option>
+                            <option value="4">休闲食品</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">虚拟销量</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="goods[sales_initial]" required lay-verify="required"
+                               placeholder="请输入商品虚拟销量"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">商品状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="goods[goods_status]" value="1" title="上架" checked>
+                        <input type="radio" name="goods[goods_status]" value="0" title="下架">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">是否置顶</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="goods[is_top]" value="1" title="是" checked>
+                        <input type="radio" name="goods[is_top]" value="0" title="否">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">多规格属性</label>
+                    <div class="layui-input-block">
+                        <input type="radio" lay-filter="spec_type" name="goods[spec_type]" value="10" title="关闭"
+                               checked>
+                        <input type="radio" lay-filter="spec_type" name="goods[spec_type]" value="20" title="启用">
+                    </div>
+                </div>
+                <!--单规格属性-->
+                <div class="layui-form-item  single-items">
+                    <label class="layui-form-label" style="width: auto;">商品编码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="goods[spec][goods_no]" placeholder="请输入商品编码"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  single-items">
+                    <label class="layui-form-label" style="width: auto;">商品价格</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="goods[spec][goods_price]" placeholder="请输入商品价格"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  single-items">
+                    <label class="layui-form-label" style="width: auto;">商品划线价</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="goods[spec][line_price]" placeholder="请输入商品划线价"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  single-items">
+                    <label class="layui-form-label" style="width: auto;">当前库存</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="goods[spec][stock_num]" placeholder="请输入当前库存数量"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  single-items">
+                    <label class="layui-form-label" style="width: auto;">商品重量</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="goods[spec][goods_weight]" placeholder="请输入商品重量(Kg)"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!--多规格属性-->
+                <div class="layui-form-item spec-items" style="display: none;">
+                    <label class="layui-form-label" style="width: auto;">属性名称</label>
+                    <div class="layui-input-block">
+                        <div class="row">
+                            <div class="col-md-10 col-sm-10 col-xs-10">
+
+                                <div class="goods-spec-many" style="display: none;">
+                                    <div class="goods-spec-box">
+                                        <!-- 规格属性 -->
+                                        <div class="spec-attr"></div>
+
+                                        <!-- 添加规格：按钮 -->
+                                        <div class="spec-group-button">
+                                            <button type="button" class="btn-addSpecGroup am-btn">添加规格</button>
+                                        </div>
+
+                                        <!-- 添加规格：表单 -->
+                                        <div class="spec-group-add">
+                                            <div class="spec-group-add-item am-form-group">
+                                                <label class="am-form-label form-require">规格名 </label>
+                                                <input type="text" class="input-specName layui-input tpl-form-input"
+                                                       placeholder="请输入规格名称">
+                                            </div>
+                                            <div class="spec-group-add-item am-form-group">
+                                                <label class="am-form-label form-require">规格值 </label>
+                                                <input type="text" class="input-specValue layui-input tpl-form-input"
+                                                       placeholder="请输入规格值">
+                                            </div>
+                                            <div class="spec-group-add-item am-margin-top">
+                                                <button type="button" class="btn-addSpecName am-btn am-btn-xs
+                                            am-btn-secondary"> 确定
+                                                </button>
+                                                <button type="button" class="btn-cancleAddSpecName am-btn am-btn-xs
+                                              am-btn-default"> 取消
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- 商品多规格sku信息 -->
+                                        <div class="goods-sku am-scrollable-horizontal">
+                                            <!-- 分割线 -->
+                                            <div class="goods-spec-line am-margin-top-lg am-margin-bottom-lg"></div>
+                                            <!-- sku 批量设置 -->
+                                            <div class="spec-batch am-form-inline">
+                                                <div class="am-form-group">
+                                                    <label class="am-form-label">批量设置</label>
+                                                </div>
+                                                <div class="am-form-group">
+                                                    <input type="text" style="width: 85px;" class="layui-input"
+                                                           data-type="goods_no" placeholder="商家编码">
+                                                </div>
+                                                <div class="am-form-group">
+                                                    <input type="number" style="width: 85px;" class="layui-input"
+                                                           data-type="goods_price" placeholder="销售价">
+                                                </div>
+                                                <div class="am-form-group">
+                                                    <input type="number" style="width: 85px;" class="layui-input"
+                                                           data-type="line_price" placeholder="划线价">
+                                                </div>
+                                                <div class="am-form-group">
+                                                    <input type="number" style="width: 85px;" class="layui-input"
+                                                           data-type="stock_num" placeholder="库存数量">
+                                                </div>
+                                                <div class="am-form-group">
+                                                    <input type="number" style="width: 85px;" class="layui-input"
+                                                           data-type="goods_weight" placeholder="重量">
+                                                </div>
+                                                <div class="am-form-group">
+                                                    <button type="button" class="btn-specBatchBtn am-btn am-btn-sm am-btn-secondary
+                                                 am-radius">确定
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!-- sku table -->
+                                            <table class="spec-sku-tabel am-table am-table-bordered am-table-centered
+                                     am-margin-bottom-xs am-text-nowrap"></table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <textarea id="textarea" style="display: none;" name="goods[content]"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- 商品多规格模板 -->
+{include file="goods/_template/spec_many" /}
+<script src="__STATIC__/js/jquery.min-v2.03.js?v=2.0.3"></script>
+<script src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script src="__STATIC__/js/goods.spec.js"></script>
+<script src="__STATIC__/js/art-template.js"></script>
+<script src="__STATIC__/js/amazeui.min.js"></script>
+<script src="__STATIC__/js/jquery.form.min.js"></script>
+<script>
+    BASE_URL = '<?= isset($base_url) ? $base_url : '
+    ' ?>';
+    ADMIN_URL = '<?= isset($admin_url) ? $admin_url : '
+    ' ?>';
+</script>
+<script>
+    layui.use(['table', 'jquery', 'element', 'layedit', 'layer', 'form'], function () {
+        var table = layui.table;
+        var $ = layui.jquery;
+        var form = layui.form;
+        var element = layui.element;
+        var layer = layui.layer;
+        var layedit = layui.layedit;
+        $(function () {
+            // 注册商品多规格组件
+            var specMany = new GoodsSpec({
+                container: '.goods-spec-many'
+            });
+            form.on('radio(spec_type)', function (data) {
+                var $goodsSpecMany = $('.goods-spec-many'), $specItems = $('.spec-items'),
+                    $singleItems = $(".single-items")
+                    , $goodsSpecSingle = $('.goods-spec-single');
+                if (data.value === '10') {
+                    $goodsSpecMany.hide() && $specItems.hide() && $singleItems.show();
+                } else {
+                    $goodsSpecMany.show() && $specItems.show() && $singleItems.hide();
+                }
+            });
+            form.on('submit(formDemo)', function (data) {
+                // let field = {goods: {spec_many: specMany.getData()}}
+                let obj = data.field
+                obj.goods = {spec_many: specMany.getData()}
+                console.log(obj)
+                // let specMany = specMany.getData()
+                // let goods = {}
+                // for (let i in field){
+                //     let goods = i
+                //     for (let k in field[i]){
+                //         let spec_many = k
+                //         goods.goods.spec_many = 1
+                //     }
+                // }
+                // console.log(goods)
+                $.post("{:url('Goods/created')}",obj,res=>{
+                    console.log(res)
+                    layer.msg(res.msg)
+                    if (res.code == 200){
+                        setTimeout(()=>{
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        },1500)
+                    }
+                })
+                return false;
+            });
+        });
+    })
+</script>
+
+</body>
+</html>

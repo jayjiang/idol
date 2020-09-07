@@ -1,0 +1,152 @@
+{extend name="common/base" /}
+{block name="body"}
+
+<form class="layui-form" action="">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">网站设置</li>
+            <li>上传配置</li>
+            <li>支付配置</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">站点名称</label>
+                    <div class="layui-input-block">
+                        <input value="{$dev['site_name']}" type="text" name="site_name" required lay-verify="required" placeholder="请输入系统名称"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">站点关键字</label>
+                    <div class="layui-input-block">
+                        <input value="{$dev['site_keywords']}" type="text" name="site_keywords" required lay-verify="required" placeholder="请输入站点关键字"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">站点描述</label>
+                    <div class="layui-input-block">
+                        <input value="{$dev['site_description']}" type="text" name="site_description" required lay-verify="required" placeholder="请输入站点描述"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">站点版权</label>
+                    <div class="layui-input-block">
+                        <input value="{$dev['copy_right']}" type="text" name="copy_right" required lay-verify="required" placeholder="请输入站点版权"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">权限校验</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="is_auth" value="{$dev['is_auth']}" title="校验" {$dev['is_auth'] == 1?'checked':''}>
+                        <input type="radio" name="is_auth" value="{$dev['is_auth']}" title="不校验" {$dev['is_auth'] == 0?'checked':''}>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label" style="width: auto;">统计代码</label>
+                    <div class="layui-input-block">
+                        <textarea name="statistics_code" placeholder="请输入第三方统计代码" class="layui-textarea">{$dev['statistics_code']}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">自定义域名</label>
+                    <div class="layui-input-block">
+                        <input value="{$dev['upload_domain']}" type="text" name="upload_domain" required lay-verify="required" placeholder="请输入自定义域名"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">上传配置</label>
+                    <div class="layui-input-block">
+                        <input type="radio" lay-filter="upload_type" name="upload_type" value="0" title="本地上传" {$dev['upload_type'] == 0?'checked':''}>
+                        <input type="radio" lay-filter="upload_type" name="upload_type" value="1" title="七牛云" {$dev['upload_type'] == 1?'checked':''}>
+                        <input type="radio" lay-filter="upload_type" name="upload_type" value="2" title="阿里云" {$dev['upload_type'] == 2?'checked':''}>
+                        <input type="radio" lay-filter="upload_type" name="upload_type" value="2" title="腾讯云" {$dev['upload_type'] == 3?'checked':''}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">APPID</label>
+                    <div class="layui-input-block">
+                        <input type="text" value="{$dev['upload_appid']}" name="upload_appid" placeholder="请输入APPID，若不是腾讯云则不填写此项" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">secretId</label>
+                    <div class="layui-input-block">
+                        <input type="text" value="{$dev['upload_secretId']}" name="upload_secretId" placeholder="请输入secretId/accessKey/accessId" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">secretKey</label>
+                    <div class="layui-input-block">
+                        <input type="text" value="{$dev['upload_secretKey']}" name="upload_secretKey" placeholder="请输入secretKey/accessSecret" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">bucket</label>
+                    <div class="layui-input-block">
+                        <input type="text" value="{$dev['upload_bucket']}" name="upload_bucket" placeholder="请输入bucket" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">region</label>
+                    <div class="layui-input-block">
+                        <input type="text" value="{$dev['upload_region']}" name="upload_region" placeholder="请输入region，若不是腾讯云则不填写此项" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">支付方式</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="payment_type" value="{$dev['payment_type']}" value="0" title="微信支付" {$dev['payment_type'] == 0?'checked':''}>
+                        <input type="radio" name="payment_type" value="{$dev['payment_type']}" value="1" title="支付宝支付" {$dev['payment_type'] == 1?'checked':''}>
+                        <input type="radio" name="payment_type" value="{$dev['payment_type']}" value="2" title="银联支付" {$dev['payment_type'] == 2?'checked':''}>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="script"}
+<script>
+    layui.use(['form','element','layer'], function () {
+        var form = layui.form;
+        var element = layui.element;
+        var layer = layui.layer;
+        form.on('radio(upload_type)', function(data){
+            console.log(data.elem); //得到radio原始DOM对象
+            console.log(data.value); //被点击的radio的value值
+        });
+        form.on('submit(formDemo)', function (data) {
+            $.post("{:url('System/config')}",data.field,res=>{
+                layer.msg(res.msg)
+                if (res.code == 200){
+                    setTimeout(()=>{
+                        window.location.reload();
+                    },1500)
+                }
+            })
+            return false;
+        });
+    });
+</script>
+{/block}

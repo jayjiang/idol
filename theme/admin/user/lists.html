@@ -1,0 +1,199 @@
+{extend name="common/base" /}
+{block name="body"}
+<div class="layui-card">
+    <div class="layui-card-body">
+        <p>
+            <button class="btn btn-primary " type="button" @click="created"><i class="fa fa-plus"></i>&nbsp;新增</button>
+            <button class="btn btn-success" @click="checkAll" type="button"><i class="fa fa-pencil-square-o"></i>&nbsp;全选</span>
+            </button>
+            <button class="btn btn-danger" @click="checkBack" type="button"><i class="fa fa-pencil-square-o"></i>&nbsp;反选</span>
+            </button>
+            <button class="btn btn-info " type="button" @click="batchDeleted"><i class="fa fa-remove"></i>&nbsp;删除
+            </button>
+        </p>
+        <div class="ibox float-e-margins">
+            <div class="ibox-title" style="border: none;">
+                <h5>用户管理 <small class="m-l-sm">
+                    <span class="layui-breadcrumb">
+                      <a href="">系统管理</a>
+                      <a href="">用户管理</a>
+                    </span>
+                </small></h5>
+            </div>
+            <div class="ibox-content" style="padding: 0px;">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th style="text-align: center;cursor: pointer;" class="checkAll">全选
+                            <th style="text-align: center;">用户名</th>
+                            <th style="text-align: center;">真实姓名</th>
+                            <th style="text-align: center;">用户头像</th>
+                            <th style="text-align: center;">邮箱</th>
+                            <th style="text-align: center;">登陆次数</th>
+                            <th style="text-align: center;">最后IP</th>
+                            <th style="text-align: center;">最后登录时间</th>
+                            <th style="text-align: center;">状态</th>
+                            <th>添加时间</th>
+                            <th>更新时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="item in user">
+                            <td style="text-align: center;">
+                                <input type="checkbox" class="i-checks" :data-id="item['id']" name="id[]">
+                            </td>
+                            <td style="text-align: center;">{{item['username']}}</td>
+                            <td style="text-align: center;">{{item['fullname']}}</td>
+                            <td style="text-align: center;">
+                                <img :src="item['headimg']" width="48" height="48" style="border-radius: 50%">
+                            </td>
+                            <td style="text-align: center;">{{item['email']}}</td>
+                            <td style="text-align: center;">{{item['login_number']}}</td>
+                            <td style="text-align: center;">{{item['last_login_ip']}}</td>
+                            <td style="text-align: center;">{{item['last_login_time']}}</td>
+                            <td style="text-align: center;"><span
+                                    class="badge {{item['status']==1?'badge-primary':'badge-danger'}}">{{item['status']==1?'显示':'隐藏'}}</span>
+                            </td>
+                            <td>{{item['create_time']}}</td>
+                            <td>{{item['update_time']}}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" type="button" @click="modifyUser"
+                                        :data-id="item['id']"><i
+                                        class="fa fa-pencil-square-o"></i>&nbsp;编辑
+                                </button>
+                                <button class="btn btn-danger btn-sm" type="button" @click="deleted"
+                                        :data-id="item['id']"><i
+                                        class="fa fa-remove"></i>&nbsp;删除
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--分页-->
+            <div id="paging" style="text-align: right;"></div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    layui.use(['element', 'jquery', 'laypage'], function () {
+        var element = layui.element,
+            laypage = layui.laypage,
+            $ = layui.jquery;
+        var app = new Vue({
+            el: '#app',
+            data: {
+                curr: 1,
+                limit: 15,
+                user: [],
+                total: 0
+            },
+            methods: {
+                str_repeats(str, n) {
+                    var res = ''
+                    while (n) {
+                        if (n % 2 === 1) {
+                            res += str
+                        }
+                        if (n > 1) {
+                            str += str
+                        }
+                        n >>= 1
+                    }
+                    return res
+                },
+                batchDeleted: function () {
+                    var str = "";
+                    var ids = "";
+                    $("input:checkbox").each(function () {
+                        if (true == $(this).is(':checked')) {
+                            str += $(this).attr("data-id") + ",";
+                        }
+                    });
+                    if (str.substr(str.length - 1) == ',') {
+                        ids = str.substr(0, str.length - 1);
+                    }
+                    $.post("{:url('User/deleted')}", {ids: ids}, res => {
+                        layer.msg(res.msg)
+                        if (res.code == 200) {
+                            setTimeout(() => {
+                                this.getLists()
+                            }, 1500)
+                        }
+                    })
+                }
+                ,
+                checkAll: function (e) {
+                    console.log(e)
+                    $('input[type=checkbox]').iCheck('check');
+                }
+                ,
+                checkBack: function () {
+                    $('input[type=checkbox]').iCheck('toggle');
+                },
+                created() {
+                    let that = this
+                    layer.open({
+                        type: 2,
+                        title: '添加用户',
+                        shade: 0.8,
+                        area: ['500px', '500px'],
+                        content: "{:url('User/created')}",
+                        end: function () {
+                            that.getLists()
+                        }
+                    });
+                }
+                ,
+                modifyUser(e) {
+                    let that = this
+                    let id = e.target.getAttribute('data-id')
+                    layer.open({
+                        type: 2,
+                        title: '编辑用户',
+                        shade: 0.8,
+                        area: ['500px', '500px'],
+                        content: "{:url('User/modify')}?id=" + id,
+                        end: function () {
+                            that.getLists()
+                        }
+                    });
+                }
+                ,
+                deleted(e) {
+                    let id = e.target.getAttribute('data-id')
+                    $.post("{:url('User/deleted')}", {ids: id}, res => {
+                        layer.msg(res.msg)
+                        if (res.code == 200) {
+                            setTimeout(() => {
+                                this.getLists()
+                            }, 1500)
+                        }
+                    })
+                },
+                getLists() {
+                    $.get("{:url('User/lists')}", {page: this.curr, limit: this.limit}, res => {
+                        this.user = res.data
+                        setTimeout(() => {
+                            $('.i-checks').iCheck({
+                                checkboxClass: 'icheckbox_square-green',
+                                radioClass: 'iradio_square-green',
+                            });
+                        }, 100);
+                    })
+                }
+            },
+            created() {
+                this.getLists()
+            }
+            ,
+        })
+    });
+
+</script>
+{/block}

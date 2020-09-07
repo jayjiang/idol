@@ -1,0 +1,102 @@
+{extend name="common/base" /}
+{block name="body"}
+<form role="form" class="form-horizontal layui-form" style="padding: 20px 15px;">
+    <input type="hidden" value="{$user['id']}" name="id">
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">用户名</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <input type="text" name="username" value="{$user['username']}" placeholder="请输入用户名" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">真实姓名</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <input type="text" name="fullname" value="{$user['fullname']}" placeholder="请输入真实姓名" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">用户头像</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <div class="row">
+                <div class="col-xs-8 col-sm-8 col-lg-9">
+                    <input type="text" value="{$user['headimg']}" disabled name="headimg" placeholder="请上传用户头像" class="form-control">
+                </div>
+                <div class="col-xs-4 col-sm-4 col-lg-3">
+                    <button class="btn btn-success upload" type="button"><i class="fa fa-upload"></i>&nbsp;&nbsp;<span class="bold">上传</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">所属权限</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <select name="group_id">
+                {volist name="group" id="vo"}
+                <option value="{$vo['id']}">{$vo['title']}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">用户密码</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <input type="password" name="password" value="{$user['password']}" placeholder="请输入用户密码" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">邮箱</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <input type="email" name="email" value="{$user['email']}" placeholder="请输入邮箱" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">状态</label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+            <input type="radio" name="status" value="1" title="显示" {$user['status'] == 1?'checked':''}>
+            <input type="radio" name="status" value="0" title="隐藏" {$user['status'] == 0?'checked':''}>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;"></label>
+        <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4" style="padding: 0px;">
+            <button class="btn btn-primary btn-block" type="submit" lay-submit lay-filter="submit">确认提交</button>
+        </div>
+    </div>
+</form>
+{/block}
+{block name="script"}
+<script>
+    layui.use(['element', 'jquery', 'form'], function () {
+        var element = layui.element,
+            form = layui.form,
+            $ = layui.jquery;
+        $(".upload").click(function () {
+            var parent_id = layer.open({
+                type: 2,
+                title: '图片管理器',
+                shadeClose: true,
+                area: ['480px', '420px'],
+                content: "{:url('Picture/lists')}",
+                end:function (e) {
+                    let file = layui.data("file");
+                    $("input[name='headimg']").val(file['object'][0]['path'])
+                }
+            });
+        })
+        form.on('submit(submit)', function (data) {
+            $.post("{:url('User/modify')}", data.field, res => {
+                layer.msg(res.msg)
+                if (res.code == 200) {
+                    setTimeout(() => {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    }, 1500)
+                }
+            })
+            return false;
+        });
+    });
+
+</script>
+{/block}

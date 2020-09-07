@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{extend name="common/iframe" /}
+        {block name="body"}
+        <form role="form"  class="form-horizontal layui-form" style="padding: 20px 15px;">
+            <input type="hidden" name="id" value="{$rule['id']}">
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">菜单规则</label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+                    <select name="pid" lay-verify="required" lay-search>
+                        <option value="0">默认顶级菜单</option>
+                        {volist name="allRule" id="vo"}
+                        <option value="{$vo['id']}" {$vo['id'] == $rule['pid']?'selected':''}><?php echo str_repeat("-",$vo["level"]*8)?>{$vo['title']}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">菜单规则</label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+                    <input type="text" name="name" placeholder="请输入菜单规则 例如：Index/index" value="{$rule['name']}" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">图标名称</label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+                    <input type="text" name="icon" value="{$rule['icon']}" placeholder="请输入图标名称 例如：fa fa-home" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">菜单名称</label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+                    <input type="text" name="title" value="{$rule['title']}" placeholder="请输入菜单名称 例如：权限管理" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">菜单参数</label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+                    <input type="text" name="params"  value="{$rule['params']}" placeholder="请输入菜单参数 例如：a=1&b=2" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">菜单状态</label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+                    <input type="radio" name="status" value="1" title="显示" {$rule['status'] == 1?'checked':''}>
+                    <input type="radio" name="status" value="0" title="隐藏" {$rule['status'] == 0?'checked':''}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">是否菜单</label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+                    <input type="radio" name="is_menu" value="1" title="是菜单" {$rule['is_menu'] == 1?'checked':''}>
+                    <input type="radio" name="is_menu" value="0" title="非菜单" {$rule['is_menu'] == 0?'checked':''}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;">验证权限</label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4">
+                    <input type="radio" name="is_verify" value="1" title="验证" {$rule['is_verify'] == 1?'checked':''}>
+                    <input type="radio" name="is_verify" value="0" title="放行" {$rule['is_verify'] == 0?'checked':''}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-1 text-center" style="margin-top: 5px;"></label>
+                <div class="col-xs-9 col-sm-6 col-md-4 col-lg-4" style="padding: 0px;">
+                    <button class="btn btn-primary btn-block" type="submit" lay-submit lay-filter="submit">确认提交</button>
+                </div>
+            </div>
+        </form>
+        {/block}
+        {block name="script"}
+        <script>
+            layui.use(['element', 'jquery','form'], function () {
+                var element = layui.element,
+                    form = layui.form,
+                    $ = layui.jquery;
+                form.on('submit(submit)', function(data){
+                    $.post("{:url('Rule/modify')}",data.field,res=>{
+                        layer.msg(res.msg)
+                        if (res.code == 200){
+                            setTimeout(()=>{
+                                var index=parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            },1500)
+                        }
+                    })
+                    return false;
+                });
+            });
+
+        </script>
+        {/block}</title>
+</head>
+<body>
+
+</body>
+</html>

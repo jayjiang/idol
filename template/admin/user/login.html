@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>后台登录</title>
+    <link rel="stylesheet" type="text/css" href="/static/template/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="/static/template/css/login.css" />
+</head>
+
+<body>
+<div class="m-login-bg">
+    <div class="m-login">
+        <h3>{:dev('site_name')} {:dev('site_child_name')}</h3>
+        <div class="m-login-warp">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <input type="text" name="username" required lay-verify="required" placeholder="用户名" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-item">
+                    <input type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <input type="text" name="captcha" required lay-verify="required" placeholder="验证码" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-inline">
+                        <img class="verifyImg" style="cursor: pointer;" onclick="this.src=this.src+'?c='+Math.random();" src="{:captcha_src()}" />
+                    </div>
+                </div>
+                <div class="layui-form-item m-login-btn">
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="login">登录</button>
+                    </div>
+                    <div class="layui-inline">
+                        <button type="reset" class="layui-btn layui-btn-primary">取消</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <p class="copyright">Copyright 2018-2020 by {:dev('site_name')}</p>
+    </div>
+</div>
+<script src="/static/template/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layedit', 'laydate','jquery'], function() {
+        var form = layui.form(),
+            layer = layui.layer;
+            $ = layui.jquery;
+        //自定义验证规则
+        form.verify({
+            title: function(value) {
+                if(value.length < 5) {
+                    return '标题至少得5个字符啊';
+                }
+            },
+            password: [/(.+){4,12}$/, '密码必须4到12位'],
+            captcha: [/(.+){5}$/, '验证码必须是5位'],
+        });
+        //监听提交
+        form.on('submit(login)', function(data) {
+            $.post("{:url('User/login')}",data.field,res=>{
+                layer.msg(res.msg)
+                if (res.code == 200){
+                    setTimeout(()=>{
+                        window.location.href = "{:url('Index/index')}"
+                    },1500)
+                }
+            })
+            return false;
+        });
+
+    });
+</script>
+</body>
+
+</html>
